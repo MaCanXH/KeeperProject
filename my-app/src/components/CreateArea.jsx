@@ -8,14 +8,6 @@ function CreateArea(props) {
     title: "",
     content: "",
   });
-  // const [noteTitle, setTitle] = useState("");
-  // const [noteContent, setContent] = useState("");
-
-  // function handleChange(event) {
-  //   event.target.name === "title"
-  //     ? setTitle(event.target.value)
-  //     : setContent(event.target.value);
-  // }
 
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -24,8 +16,6 @@ function CreateArea(props) {
   }
 
   function handleClick(event) {
-    // setTitle("");
-    // setContent("");
     props.AddNotes(note);
     setNote({ title: "", content: "" });
     event.preventDefault();
