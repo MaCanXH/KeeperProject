@@ -1,9 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CreateArea from "./CreateArea";
 import Note from "./Note";
+import axios from "axios";
 
-function UserPage() {
+export default function UserPage(props) {
   const [noteList, setNoteList] = useState([]);
+  async function fetchUserNotes() {
+    const response = await axios.get("http://localhost:3000/notes", {
+      params: {
+        user : props.user,
+      }
+    });
+    // console.log(response.data);
+    setNoteList(response.data);
+  }
+
+  useEffect(() => {
+    fetchUserNotes();
+  }, []);
 
   function AddNotes(note) {
     setNoteList([...noteList, note]);
@@ -31,5 +45,3 @@ function UserPage() {
     </div>
   );
 }
-
-export default UserPage;

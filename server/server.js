@@ -22,6 +22,7 @@ const db = new Client({
 });
 
 let isLoggedIn = false;
+let user = 0;
 
 db.connect();
 
@@ -53,6 +54,13 @@ app.post("/login", async (req, res) => {
         console.log("no record")
         res.send({validation : false});
     }
+});
+
+app.get("/notes", async (req, res) => {
+    const user = req.query.user;
+    const user_id = await db.query("SELECT user_id FROM user_data WHERE user_account = $1", [user]);
+    const notes = await db.query("SELECT title, content FROM notes WHERE user_id = $1", [user_id.rows[0].user_id]);
+    res.send(notes.rows);
 })
 
 app.listen(port, (req, res) => {

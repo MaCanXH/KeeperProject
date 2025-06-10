@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-function Login(props) {
+export default function Login(props) {
   const [buttonColor, setButtonColor] = useState({
     backgroundColor: "white",
     color: "#f5ba13",
@@ -27,6 +27,7 @@ function Login(props) {
         password,
       });
       if (response.data.validation) {
+        props.LoginUser(email);
         props.AuthenticationFlag(true);
       } else {
         setWarning(false);
@@ -76,5 +77,3 @@ function Login(props) {
     </div>
   );
 }
-
-export default Login;

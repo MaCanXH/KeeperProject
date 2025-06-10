@@ -3,7 +3,7 @@ import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import Zoom from "@mui/material/Zoom";
 
-function CreateArea(props) {
+export default function CreateArea(props) {
   const [note, setNote] = useState({
     title: "",
     content: "",
@@ -52,5 +52,3 @@ function CreateArea(props) {
     </div>
   );
 }
-
-export default CreateArea;
