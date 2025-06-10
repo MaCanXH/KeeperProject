@@ -19,8 +19,9 @@ export default function UserPage(props) {
     fetchUserNotes();
   }, []);
 
-  function AddNotes(note) {
-    setNoteList([...noteList, note]);
+  async function AddNotes(note) {
+    const newNote = await axios.post("http://localhost:3000/add", {note});
+    setNoteList([...noteList, newNote.data[0]]);
   }
 
   function DeleteNotes(id) {
