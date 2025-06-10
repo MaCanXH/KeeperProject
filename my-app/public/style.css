@@ -77,6 +77,48 @@ form.create-note {
   border-radius: 7px;
   box-shadow: 0 1px 5px rgb(138, 137, 137);
 }
+
+.login-form {
+  margin: 30px auto 20px auto;
+}
+
+.login-field {
+  border: 2px solid rgb(138, 137, 137, 0.8);
+  background-color: rgba(252, 252, 252, 0.5);
+  width: 250px;
+  border-radius: 3px;
+  font-family: "McLaren", cursive;
+  padding: 10px 15px;
+  margin: 0 auto 10px auto;
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  color: black;
+  font-weight: 300;
+}
+
+.login-button {
+  appearance: none;
+  outline: 0;
+  border: 2px solid #f5ba13;
+  font-family: "McLaren", cursive;
+  padding: 10px 15px;
+  color: #f5ba13;
+  border-radius: 3px;
+  width: 250px;
+  font-size: 18px;
+  margin: 0 auto;
+  display: block;
+}
+
+.login-warning {
+  margin: 0 auto;
+  color: red;
+  padding: 10px 15px;
+  width: 250px;
+  text-align: center;
+}
+
 form.create-note input,
 form.create-note textarea {
   width: 100%;

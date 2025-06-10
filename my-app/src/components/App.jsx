@@ -1,22 +1,23 @@
 import Header from "./Header";
 import Footer from "./Footer";
-import Note from "./Note";
 import "../../public/style.css";
 import { useState, useEffect } from "react";
-import CreateArea from "./CreateArea";
-import axios from 'axios';
+import UserPage from "./UserPage";
+import Login from "./Login";
+// import axios from "axios";
 
 export default function App() {
   const [noteList, setNoteList] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const fetchAPI = async() => {
-    const response = await axios.get("http://localhost:3000/");
-    console.log(response.data.hello);
-  }
+  // const fetchAPI = async() => {
+  //   const response = await axios.get("http://localhost:3000/");
+  //   console.log(response.data.hello);
+  // }
 
-  useEffect(() => {
-    fetchAPI();
-  }, []);
+  // useEffect(() => {
+  //   fetchAPI();
+  // }, []);
 
   function AddNotes(note) {
     setNoteList([...noteList, note]);
@@ -33,15 +34,11 @@ export default function App() {
   return (
     <div>
       <Header />
-      <CreateArea AddNotes={AddNotes} />
-      {noteList.map((content, id) => (
-        <Note
-          key={id}
-          title={content.title}
-          content={content.content}
-          DeleteNotes={() => DeleteNotes(id)}
-        />
-      ))}
+      {isAuthenticated ? (
+        <UserPage />
+      ) : (
+        <Login AuthenticationFlag={setIsAuthenticated} />
+      )}
       <Footer />
     </div>
   );
