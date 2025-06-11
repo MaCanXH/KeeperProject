@@ -13,7 +13,7 @@ export default function App() {
     <div>
       <Header />
       {isAuthenticated ? (
-        <UserPage user={currentUser}/>
+        <UserPage AuthenticationFlag={setIsAuthenticated} user={currentUser}/>
       ) : (
         <Login AuthenticationFlag={setIsAuthenticated} LoginUser={setCurrentUser}/>
       )}

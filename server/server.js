@@ -60,14 +60,20 @@ app.get("/notes", async (req, res) => {
     const user = req.query.user;
     const id = await db.query("SELECT user_id FROM user_data WHERE user_account = $1", [user]);
     user_id = id.rows[0].user_id;
-    const notes = await db.query("SELECT title, content FROM notes WHERE user_id = $1", [user_id]);
+    const notes = await db.query("SELECT id, title, content FROM notes WHERE user_id = $1", [user_id]);
     res.send(notes.rows);
 })
 
 app.post("/add", async (req, res) => {
     const {title, content} = req.body.note;
     const response = await db.query("INSERT INTO notes (user_id, title, content) VALUES ($1, $2, $3) RETURNING title, content", [user_id, title, content]);
-    res.send(response.rows);
+    res.sendStatus(200);
+})
+
+app.post("/delete", async (req, res) => {
+    const note_id = req.body.id;
+    const response = await db.query("DELETE FROM notes WHERE id = $1 RETURNING *", [note_id]);
+    res.sendStatus(200);
 })
 
 app.listen(port, (req, res) => {

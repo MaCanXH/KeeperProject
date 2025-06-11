@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import LogoutIcon from '@mui/icons-material/Logout';
 import Zoom from "@mui/material/Zoom";
 
 export default function CreateArea(props) {
@@ -15,10 +16,13 @@ export default function CreateArea(props) {
     setNote({ ...note, [event.target.name]: event.target.value });
   }
 
-  function handleClick(event) {
+  function handleClick() {
     props.AddNotes(note);
     setNote({ title: "", content: "" });
-    event.preventDefault();
+  }
+
+  function handleLogout() {
+    props.AuthenticationFlag(false);
   }
 
   function Expand() {
@@ -38,14 +42,20 @@ export default function CreateArea(props) {
         <textarea
           name="content"
           placeholder="Take a note..."
-          rows= {isExpanded? "3": "1"}
+          rows={isExpanded ? "3" : "1"}
           onChange={handleChange}
           value={note.content}
           onClick={Expand}
         />
-        <Zoom in={isExpanded}>
+        <Zoom in={isExpanded} className="add-button">
           <Fab onClick={handleClick}>
             <AddIcon />
+          </Fab>
+        </Zoom>
+
+        <Zoom in={isExpanded} className="logout-button">
+          <Fab onClick={handleLogout}>
+            <LogoutIcon />
           </Fab>
         </Zoom>
       </form>
