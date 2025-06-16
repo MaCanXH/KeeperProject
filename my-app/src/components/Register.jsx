@@ -21,7 +21,7 @@ export default function Register(props) {
       setExist(true);
     } else {
       try {
-        const response = await axios.post("http://localhost:3000/register", {
+        const response = await axios.post("https://keeperproject-9m43.onrender.com//register", {
           username,
           password,
         });

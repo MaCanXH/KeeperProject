@@ -9,7 +9,7 @@ export default function UserPage(props) {
 
   async function fetchUserNotes() {
     try {
-      const response = await axios.get("http://localhost:3000/notes",
+      const response = await axios.get("https://keeperproject-9m43.onrender.com/notes",
     );
       setUsername(response.data.username);
       setNoteList(response.data.notes);
@@ -28,7 +28,7 @@ export default function UserPage(props) {
     // setNoteList([...noteList, newNote.data[0]]);
 
     try {
-      await axios.post("http://localhost:3000/add", { note });
+      await axios.post("https://keeperproject-9m43.onrender.com/add", { note });
       fetchUserNotes();
       console.log("successfully added note");
     } catch (err) {
@@ -45,7 +45,7 @@ export default function UserPage(props) {
     //   })
     // );
     try {
-      await axios.post("http://localhost:3000/delete", { id });
+      await axios.post("https://keeperproject-9m43.onrender.com/delete", { id });
       fetchUserNotes();
       console.log("successfully deleted note id:", id);
     } catch (err) {
