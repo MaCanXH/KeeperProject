@@ -3,6 +3,7 @@ import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import LogoutIcon from '@mui/icons-material/Logout';
 import Zoom from "@mui/material/Zoom";
+import axios from "axios";
 
 export default function CreateArea(props) {
   const [note, setNote] = useState({
@@ -21,8 +22,15 @@ export default function CreateArea(props) {
     setNote({ title: "", content: "" });
   }
 
-  function handleLogout() {
-    props.AuthenticationFlag(false);
+  async function handleLogout() {
+    try {
+      await axios.get("http://localhost:3000/logout", {
+        withCredentials: true,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    props.currentPage('Login');
   }
 
   function Expand() {

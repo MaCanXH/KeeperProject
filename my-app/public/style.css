@@ -79,7 +79,7 @@ form.create-note {
 }
 
 .login-form {
-  margin: 30px auto 20px auto;
+  margin: 30px auto 0 auto;
 }
 
 .login-field {
@@ -107,7 +107,7 @@ form.create-note {
   border-radius: 3px;
   width: 250px;
   font-size: 18px;
-  margin: 0 auto;
+  margin: 0 auto 10px auto;
   display: block;
 }
 
@@ -156,4 +156,11 @@ form.create-note .logout-button {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   outline: none;
+}
+
+.user-info {
+  margin: 0 auto;
+  font-family: "McLaren", cursive;
+  padding-top: 10px;
+  text-align: center;
 }

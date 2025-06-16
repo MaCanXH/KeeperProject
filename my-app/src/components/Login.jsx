@@ -2,33 +2,33 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function Login(props) {
-  const [buttonColor, setButtonColor] = useState({
+  const [loginButtonColor, setLoginButtonColor] = useState({
     backgroundColor: "white",
     color: "#f5ba13",
   });
 
-  const [email, setEmail] = useState("");
+  const [registeBbuttonColor, setRegisterButtonColor] = useState({
+    backgroundColor: "white",
+    color: "#f5ba13",
+  });
+
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [warning, setWarning] = useState(true);
 
-  function OnButton() {
-    setButtonColor({ backgroundColor: "#f5ba13", color: "white" });
-  }
-
-  function OutButton() {
-    setButtonColor({ backgroundColor: "white", color: "#f5ba13" });
-  }
-
-  async function handleSubmit(event) {
+  async function handleLogin(event) {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:3000/login",
+        {
+          username,
+          password,
+        },
+        { withCredentials: true }
+      );
       if (response.data.validation) {
-        props.LoginUser(email);
-        props.AuthenticationFlag(true);
+        props.currentPage("UserPage");
       } else {
         setWarning(false);
       }
@@ -37,17 +37,22 @@ export default function Login(props) {
     }
   }
 
+  async function handleRegister(event) {
+    event.preventDefault();
+    props.currentPage("Register");
+  }
+
   return (
     <div>
-      <form className="login-form" onSubmit={handleSubmit}>
+      <form className="login-form" onSubmit={handleLogin}>
         <input
           className="login-field"
           type="text"
-          name="email"
+          name="username"
           placeholder="Email"
-          value={email}
+          value={username}
           onChange={(e) => {
-            setEmail(e.target.value);
+            setUsername(e.target.value);
           }}
         />
         <input
@@ -62,18 +67,42 @@ export default function Login(props) {
           }}
         />
         <button
-          style={buttonColor}
-          onMouseOver={OnButton}
-          onMouseOut={OutButton}
+          style={loginButtonColor}
+          onMouseOver={() => {
+            setLoginButtonColor({ backgroundColor: "#f5ba13", color: "white" });
+          }}
+          onMouseOut={() => {
+            setLoginButtonColor({ backgroundColor: "white", color: "#f5ba13" });
+          }}
           className="login-button"
           type="submit"
         >
           Login
         </button>
-        <p className="login-warning" hidden={warning}>
-          Incorrect email or password
-        </p>
+        <button
+          style={registeBbuttonColor}
+          onMouseOver={() => {
+            setRegisterButtonColor({
+              backgroundColor: "#f5ba13",
+              color: "white",
+            });
+          }}
+          onMouseOut={() => {
+            setRegisterButtonColor({
+              backgroundColor: "white",
+              color: "#f5ba13",
+            });
+          }}
+          className="login-button"
+          type="button"
+          onClick={handleRegister}
+        >
+          Register
+        </button>
       </form>
+      <p className="login-warning" hidden={warning}>
+        Incorrect username or password
+      </p>
     </div>
   );
 }

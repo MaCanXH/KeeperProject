@@ -5,17 +5,14 @@ import axios from "axios";
 
 export default function UserPage(props) {
   const [noteList, setNoteList] = useState([]);
-  const user_email = props.user;
+  const [username, setUsername] = useState('');
 
   async function fetchUserNotes() {
     try {
-      const response = await axios.get("http://localhost:3000/notes", {
-        params: {
-          user: user_email,
-        },
-      });
-      // console.log(response.data);
-      setNoteList(response.data);
+      const response = await axios.get("http://localhost:3000/notes",
+    );
+      setUsername(response.data.username);
+      setNoteList(response.data.notes);
     } catch (err) {
       console.log(err);
     }
@@ -58,7 +55,12 @@ export default function UserPage(props) {
 
   return (
     <div>
-      <CreateArea AddNotes={AddNotes} AuthenticationFlag={props.AuthenticationFlag}/>
+      <h1 className="user-info">Welcome Back, </h1>
+      <p className="user-info">{username}</p>
+      <CreateArea
+        AddNotes={AddNotes}
+        currentPage={props.currentPage}
+      />
       {noteList.map((content, keyId) => (
         <Note
           key={keyId}
