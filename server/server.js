@@ -9,6 +9,7 @@ import { Strategy } from 'passport-local';
 import session from 'express-session';
 import bcrypt from 'bcrypt';
 import genFunc from 'connect-pg-simple';
+import env from 'dotenv';
 
 /**
  * -------------- GENERAL SETUP ----------------
@@ -19,12 +20,13 @@ const app = express();
 const port = process.env.PORT || 3000;
 const saltRounds = 10;
 const corsOption = {
-    origin: "http://localhost:5173",
+    /* USED FOR DIFFERENT DOMAIN REQUEST */
+    // origin: "http://localhost:5173",
     credentials: true,
-
 };
+env.config();
 
-// app.use(express.static(path.join(__dirname, "../my-app/dist")));
+app.use(express.static(path.join(__dirname, "../my-app/dist")));
 app.use(express.json());
 app.use(cors(corsOption));
 
@@ -32,22 +34,39 @@ app.use(cors(corsOption));
  * -------------- DATABASE ----------------
  */
 
+/* FOR LOCAL DATABASE */
+// // DATABASE FOR SESSION
+// const pgPool = new Pool({
+//     host: process.env.PG_HOST,
+//     user: process.env.PG_USER,
+//     database: process.env.PG_DATABASE,
+//     password: process.env.PG_PASSWORD,
+//     port: process.env.PG_PORT,
+// });
+
+// // DATABASE FOR USER INFO.
+// const db = new Client({
+//     host: process.env.PG_HOST,
+//     user: process.env.PG_USER,
+//     database: process.env.PG_DATABASE,
+//     password: process.env.PG_PASSWORD,
+//     port: process.env.PG_PORT,
+// });
+
 // DATABASE FOR SESSION
 const pgPool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'KeeperBackEnd',
-    password: 'Chwmax743',
-    port: 5432,
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 // DATABASE FOR USER INFO.
 const db = new Client({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'KeeperBackEnd',
-    password: 'Chwmax743',
-    port: 5432,
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 let user_id = 0;
@@ -66,13 +85,14 @@ const sessionStore = new PostgresqlStore({
 
 app.use(session({
     store: sessionStore,
-    secret: 'test secret',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
         max: 1000 * 60 * 60,
-        sameSite: 'lax',
-        secure: false,
+        /* USED FOR DIFFERENT DOMAIN REQUESTt */
+        // sameSite: 'lax',
+        // secure: false,
     }
 }));
 
@@ -80,6 +100,7 @@ app.use(session({
  * -------------- PASSPORT AUTHENTICATION ----------------
  */
 
+// LOCAL STRATEGY
 passport.use('local', new Strategy(async function verify(username, password, cb) {
     try {
         const result = await db.query("SELECT * FROM user_data WHERE user_account = $1", [username]);
@@ -124,19 +145,23 @@ app.use(passport.session());
 
 // in express v5, The wildcard * must have a name, matching the behavior of parameters :, use /*splat instead of /*
 app.get("/", (req, res) =>{
-        // res.sendFile(path.join(__dirname, "../my-app/dist/index.html"));
+        res.sendFile(path.join(__dirname, "../my-app/dist/index.html"));
 });
 
+// EVERYTIME OPENING THE WEBSITE WILL FETCH THIS ROUTE ALONG WITH THE COOKIE TO CHECK THE AUTHENTICATION
 app.get("/home", (req, res) =>{
     if (req.isAuthenticated()){
         res.send({inUse: true});
     }
 });
 
+// IF LOGIN UNSUCCESSFUL, REDIRECT INTO THIS ROUTE AND SEND THE STATUS IN BOOLEAN FOR FRONTEND ACTION.
 app.get("/loginfailed", (req, res) =>{
     res.send({validation: false});
 });
 
+// LOGIN ROUTE WITH PASSPORT AUTHENTICATION. SUCCESSFUL LOGIN WILL SET THE USER ID AS USER_ID FOUND IN SESSION
+// FAILURE WILL REDIRECT TO "LOGINFAILED" ROUTE.
 app.post("/login", passport.authenticate("local", {
     failureRedirect: "/loginfailed",
 }), (req, res) => {
@@ -145,6 +170,7 @@ app.post("/login", passport.authenticate("local", {
     res.send({validation: true});
 });
 
+// REGISTER ROUTE TO REGIESTR A NEW USER
 app.post("/register", async (req, res) => {
    const {username, password} = req.body;
    console.log(username, password); 
@@ -163,25 +189,28 @@ app.post("/register", async (req, res) => {
    }
 });
 
+// ROUTE TO FETCH THE USER DATA FROM THE DATABASE: NOTES CONTENT AND USERNAME
 app.get("/notes", async (req, res) => {
     const notes = await db.query("SELECT id, title, content FROM notes WHERE user_id = $1", [user_id]);
     const username = await db.query("SELECT user_account from user_data WHERE user_id = $1", [user_id]);
-    console.log(req.sessionID);
     res.send({notes: notes.rows, username: username.rows[0].user_account});
 })
 
+// ROUTE TO ADD NEW NOTE FOR THE CURRENT USER INTO THE DATABASE
 app.post("/add", async (req, res) => {
     const {title, content} = req.body.note;
     const response = await db.query("INSERT INTO notes (user_id, title, content) VALUES ($1, $2, $3) RETURNING title, content", [user_id, title, content]);
     res.sendStatus(200);
 })
 
+// ROUTE TO DELETE NOTE OF THE CURRENT USER IN THE DATABASE
 app.post("/delete", async (req, res) => {
     const note_id = req.body.id;
     const response = await db.query("DELETE FROM notes WHERE id = $1 RETURNING *", [note_id]);
     res.sendStatus(200);
 })
 
+// ROUTE TO LOG OUT THE SESSION
 app.get("/logout", (req, res) => {
     req.logout(err => {
         if (err) {
@@ -196,10 +225,5 @@ app.get("/logout", (req, res) => {
  */
 
 app.listen(port, (req, res) => {
-    console.log("server started ar port:", port);
+    console.log(`server listening at: http://localhost:${port}/`);
 });
-
-/**
- * -------------- HELPER FUNCTIONS ----------------
- */
-
