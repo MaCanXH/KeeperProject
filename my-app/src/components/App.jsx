@@ -19,7 +19,7 @@ export default function App() {
   async function fetchHome() {
     try {
       // CHANGE TO LOCAL HOST FOR DEVELOPMENT
-      const inUse = await axios.get("https://keeperproject-9m43.onrender.com//home", {
+      const inUse = await axios.get("https://keeperproject-9m43.onrender.com/home", {
         withCredentials: true
       });
       if (inUse.data.inUse) {

@@ -24,7 +24,7 @@ export default function CreateArea(props) {
 
   async function handleLogout() {
     try {
-      await axios.get("https://keeperproject-9m43.onrender.com//logout", {
+      await axios.get("https://keeperproject-9m43.onrender.com/logout", {
         withCredentials: true,
       });
     } catch (err) {

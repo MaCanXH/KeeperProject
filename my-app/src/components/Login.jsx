@@ -20,7 +20,7 @@ export default function Login(props) {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "https://keeperproject-9m43.onrender.com//login",
+        "https://keeperproject-9m43.onrender.com/login",
         {
           username,
           password,
